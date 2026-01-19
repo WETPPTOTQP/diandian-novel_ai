@@ -17,7 +17,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment Variables
-# .env 已被允许上传作为模板 (确保其中不包含敏感 Key)
 .env.local
 .env.development.local
 .env.test.local
