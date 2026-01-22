@@ -2,13 +2,32 @@
 cd /d "%~dp0"
 
 echo [INFO] Starting Novel AI Platform...
+echo [INFO] Checking and installing dependencies first...
+
+:: Backend Setup
+if not exist .venv (
+    echo [INFO] Creating Python virtual environment...
+    python -m venv .venv
+)
+call .venv\Scripts\activate.bat
+echo [INFO] Installing backend dependencies...
+pip install -r backend/requirements.txt
+
+:: Frontend Setup
+cd frontend
+if not exist node_modules (
+    echo [INFO] Installing frontend dependencies...
+    call npm install
+)
+cd ..
+
+echo.
+echo [INFO] All dependencies ready. Launching services...
 
 :: Start Backend
-echo [INFO] Launching Backend...
-start "Novel AI Backend" cmd /k "if exist .venv\Scripts\activate.bat (call .venv\Scripts\activate.bat && echo Activated venv) else (echo No venv found, using system python) && python -m backend.app"
+start "Novel AI Backend" cmd /k "call .venv\Scripts\activate.bat && python -m backend.app"
 
 :: Start Frontend
-echo [INFO] Launching Frontend...
 cd frontend
 start "Novel AI Frontend" cmd /k "npm run dev"
 
