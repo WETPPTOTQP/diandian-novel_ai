@@ -7,135 +7,73 @@
 |------|------|
 | `app.py` | 应用入口（创建 app、挂载蓝图） |
 | `config.py` | 配置加载（环境变量、本地配置） |
-| `auth.py` | 登录注册、鉴权中间件 |
-| `novel_ai.py` | 写作业务编排（续写/改写/润色/大纲/风格等） |
-| `ai_providers.py` | 各种模型提供方封装（Ollama、本家 API 等） |
-| `prompts.py` | 所有 AI 模式的 prompt 模板集中管理 |
-| `context_builder.py` | 根据作品/章节/人物组合上下文给 AI |
+| `database.py` | 数据库连接、初始化、Session 管理 |
+| `models.py` | ORM 模型定义（User, Novel, Chapter, Character, Idea 等） |
+| `novel_ai.py` | AI 核心逻辑封装（调用 Provider 生成内容） |
+| `ai_providers.py` | AI 模型提供方适配（Ollama, OpenAI Compat） |
+| `context_builder.py` | 构建 AI 上下文（拼接前文、大纲、设定等） |
+| `prompts.py` | AI 提示词模板管理 |
+| `__main__.py` | 模块入口支持 |
+| `requirements.txt` | 后端依赖列表 |
 
-### 路由 (routes/)
+### 路由 (backend/routes/)
 | 文件 | 说明 |
 |------|------|
-| `__init__.py` | 模块初始化 |
-| `auth_routes.py` | 登录注册、刷新 token |
-| `novel_routes.py` | 作品 CRUD、章节管理 |
-| `ai_routes.py` | AI 相关接口（续写、润色、风格模仿等） |
-| `idea_routes.py` | 灵感碰撞、情节构思 |
-| `profile_routes.py` | 用户配置、用量信息 |
+| `__init__.py` | 蓝图导出 |
+| `ai_routes.py` | AI 生成接口（续写、润色、灵感等） |
+| `auth_routes.py` | 用户认证接口（登录、注册） |
+| `novel_routes.py` | 小说管理接口（增删改查作品、章节、角色、灵感） |
 
-### 数据层
+### 工具 (backend/utils/)
 | 文件 | 说明 |
 |------|------|
-| `models.py` | ORM 模型定义（User、Novel、Chapter 等） |
-| `schemas.py` | 接口请求/响应的数据结构（Pydantic 等） |
-| `database.py` | 数据库连接、Session 管理 |
-| `novels.db` | SQLite 数据库（开发环境） |
-
-### 业务服务 (services/)
-| 文件 | 说明 |
-|------|------|
-| `__init__.py` | 模块初始化 |
-| `novel_service.py` | 作品、章节相关业务逻辑 |
-| `character_service.py` | 人物卡生成与管理 |
-| `idea_service.py` | 情节构思、灵感相关逻辑 |
-
-### 工具 (utils/)
-| 文件 | 说明 |
-|------|------|
-| `__init__.py` | 模块初始化 |
-| `logging_utils.py` | 日志封装 |
-| `security.py` | 密码散列、token 生成与验证 |
-| `rate_limiter.py` | 简单限流/配额（按用户） |
-
-### 测试 (tests/)
-| 文件 | 说明 |
-|------|------|
-| `__init__.py` | 模块初始化 |
-| `test_ai_routes.py` | AI 路由测试 |
-| `test_auth.py` | 认证测试 |
-| `test_novel_routes.py` | 作品路由测试 |
-
-### 其他
-| 文件 | 说明 |
-|------|------|
-| `requirements.txt` | 依赖 |
+| `security.py` | 密码哈希、Token 生成与验证 |
+| `rate_limiter.py` | 简单的请求限流工具 |
 
 ---
 
 ## 前端 (frontend/)
 
-### 配置文件
+### 根目录配置
 | 文件 | 说明 |
 |------|------|
-| `index.html` | 入口 HTML |
-| `package.json` | 项目依赖配置 |
-| `vite.config.js` | 构建工具配置 |
+| `index.html` | 入口 HTML 文件 |
+| `package.json` | 项目依赖与脚本配置 |
+| `vite.config.js` | Vite 构建配置 |
 
-### 源码 (src/)
+### 源码 (frontend/src/)
 
 #### 入口与路由
 | 文件 | 说明 |
 |------|------|
-| `main.js` | 入口文件 |
-| `router.js` | 路由配置 |
+| `main.js` | Vue 应用入口，挂载插件 |
+| `App.vue` | 根组件 |
+| `router.js` | 路由定义与导航守卫 |
 
-#### API 封装 (api/)
+#### API (frontend/src/api/)
 | 文件 | 说明 |
 |------|------|
-| `index.js` | axios 实例、拦截器 |
-| `authApi.js` | 登录、注册、用户信息 |
-| `novelApi.js` | 作品、章节接口 |
-| `aiApi.js` | AI 调用接口（续写、润色、灵感） |
-| `profileApi.js` | 用户配置、配额 |
+| `index.js` | 统一 API 封装（Axios 实例及所有请求方法） |
 
-#### 状态管理 (store/)
+#### 页面 (frontend/src/views/)
 | 文件 | 说明 |
 |------|------|
-| `index.js` | 创建 store |
-| `userStore.js` | 用户信息、token、角色 |
-| `novelStore.js` | 当前作品、章节列表、选中章节 |
-| `uiStore.js` | 全局 UI 状态（loading、主题等） |
+| `Home.vue` | 首页：展示作品列表、新建作品 |
+| `Write.vue` | 写作页：核心编辑器、章节管理、AI 助手 |
+| `Character.vue` | 角色管理页：设定人物卡 |
+| `Ideas.vue` | 灵感构思页：管理灵感碎片 |
+| `Style.vue` | 风格模仿页（功能开发中） |
+| `Profile.vue` | 个人中心：设置与模型配置 |
 
-#### 页面 (views/)
+#### 组件 (frontend/src/components/)
 | 文件 | 说明 |
 |------|------|
-| `Home.vue` | 主页：功能入口、最近作品 |
-| `Write.vue` | 写作页：章节列表 + 编辑器 + AI 区域 |
-| `Ideas.vue` | 灵感页：关键词→灵感卡片、大纲视图 |
-| `Profile.vue` | 个人中心：账号、配额、偏好设置 |
-| `Auth.vue` | 登录/注册页（如果需要单独页面） |
-
-#### 组件 (components/)
-| 文件 | 说明 |
-|------|------|
-| `Editor.vue` | 富文本/Markdown 编辑器 |
-| `AIButton.vue` | AI 菜单按钮（续写/改写/润色等） |
-| `AIPanel.vue` | 展示 AI 结果的侧边/底部面板 |
-| `Card.vue` | 通用卡片 |
-| `NovelList.vue` | 作品列表 |
-| `ChapterList.vue` | 章节列表 |
-| `CharacterCard.vue` | 人物卡展示 |
-
-#### 布局组件 (components/Layout/)
-| 文件 | 说明 |
-|------|------|
-| `AppLayout.vue` | 应用布局 |
-| `Sidebar.vue` | 侧边栏 |
-
-#### 其他
-| 目录/文件 | 说明 |
-|-----------|------|
-| `assets/` | 静态资源（图标、logo 等） |
-| `styles/` | 全局样式 |
-| └── `index.css` | 主样式文件 |
-| └── `variables.css` | 主题色、字体等 |
-| `utils/` | 前端工具函数 |
-| └── `storage.js` | 本地存储封装（草稿、token） |
-| └── `helpers.js` | 通用小工具（防抖、节流等） |
+| `Editor.vue` | 封装的文本编辑器组件 |
+| `AIButton.vue` | AI 功能触发按钮组件 |
 
 ---
 
-## API 接口
+## API 接口概览 (参考)
 
 ### POST /api/ai/generate
 AI 生成接口（续写/改写/润色/扩写）
@@ -166,3 +104,11 @@ AI 灵感碰撞接口（大纲/人设/世界观）
   "instruction": "生成一个三幕式大纲"
 }
 ```
+
+### 根目录其他文件
+| 文件 | 说明 |
+|------|------|
+| `.env` | **核心配置**（API Key、数据库路径等） |
+| `start.bat` | Windows 一键启动脚本 |
+| `novels.db` | SQLite 数据库文件 |
+| `README.md` | 项目说明文档 |
